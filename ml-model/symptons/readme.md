@@ -64,6 +64,8 @@ The model is deployed as a live REST API on Render. You can send symptoms to it 
 ### 📍 API Endpoint
 **POST** `https://symptons-api.onrender.com/predict`
 
+**Clone My Repo**: 'https://github.com/QuantumCoder-001/symptons'
+
 ### 📥 Request Body (JSON)
 The API expects a JSON object with a key named `symptoms` containing a list of symptom names.
 ```json
