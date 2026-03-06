@@ -4,7 +4,7 @@ const axios = require('axios');
 const fs = require('fs');
 const path = require('path');
 
-const ML_SERVICE_URL = 'http://localhost:5000';
+const ML_SERVICE_URL = process.env.ML_SERVICE_URL;
 
 // Health check endpoint
 router.get('/health', async (req, res) => {

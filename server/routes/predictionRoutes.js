@@ -1,9 +1,9 @@
 const express = require("express");
 const { 
-  predictSymptoms, 
-  getHistory, 
-  getRecord, 
-  deleteRecord 
+  predictSymptoms,
+  getHistory,
+  getRecord,
+  deleteRecord
 } = require("../controllers/predictionController");
 const { protect } = require("../middleware/authMiddleware");
 
