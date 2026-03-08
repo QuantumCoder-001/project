@@ -27,8 +27,8 @@ const HealthRecordSchema = new mongoose.Schema({
   },
   // New field to store the 24 blood parameters
   reportData: {
-    type: Map,
-    of: Number,
+    type: Object, // Changed from Map of Numbers to a flexible Object
+    default: {}
   },
   predictions: [{
     disease: String,

@@ -241,7 +241,6 @@ const HealthForm = () => {
                   value={reportData[key]}
                   onChange={handleReportChange}
                   style={styles.input}
-                  required
                 />
               </div>
             ))}

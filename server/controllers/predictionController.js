@@ -68,11 +68,16 @@ const predictReport = async (req, res) => {
 
     const predictions = mlResponse.data;
 
+    const formattedReportData = {};
+    for (const key in report_data) {
+      formattedReportData[key] = parseFloat(report_data[key]);
+    }
+
     const record = await HealthRecord.create({
       user: req.user._id,
       age,
       bp,
-      reportData: report_data,
+      reportData: formattedReportData, // Use the converted numeric data
       predictions,
       predictionType: "blood_report",
       createdAt: new Date()
