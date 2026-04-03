@@ -9,7 +9,7 @@ const HealthRecordSchema = new mongoose.Schema({
   // New field to distinguish the source of the prediction
   predictionType: {
     type: String,
-    enum: ["symptoms", "blood_report"],
+    enum: ["symptoms", "blood_report", "xray"],
     default: "symptoms",
   },
   // Symptoms is no longer required globally since reports don't use it

@@ -1,227 +1,195 @@
 .container {
   max-width: 900px;
-  margin: 30px auto;
+  margin: 0 auto;
   padding: 20px;
-  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  color: #333;
-}
-
-.card {
-  background-color: #ffffff;
-  border-radius: 12px;
-  padding: 30px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-  margin-bottom: 25px;
-  border: 1px solid #e2e8f0;
+  background-color: #f8fafc; /* Light gray background */
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
 }
 
 .mainTitle {
+  color: #0f172a;
   text-align: center;
-  font-size: 28px;
-  color: #1e293b;
+  font-size: 2.2rem;
   margin-bottom: 30px;
-  font-weight: 700;
+}
+
+.card {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  border: 1px solid #e2e8f0;
 }
 
 .sectionTitle {
-  font-size: 20px;
   color: #1e293b;
-  margin-bottom: 20px;
-  font-weight: 600;
-  border-bottom: 2px solid #f1f5f9;
-  padding-bottom: 10px;
+  font-size: 1.25rem;
+  margin-bottom: 15px;
+  border-bottom: 2px solid #3b82f6;
+  display: inline-block;
+  padding-bottom: 4px;
 }
 
 .predictionBox {
-  padding: 25px;
-  border-radius: 8px;
-  background-color: #f8fafc;
+  background: #f1f5f9;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
   margin-bottom: 20px;
-  border-left: 6px solid #ef4444;
 }
 
 .diseaseName {
-  font-size: 26px;
-  font-weight: 700;
-  color: #0f172a;
+  font-size: 2rem;
+  font-weight: 800;
+  color: #2563eb;
+  margin-bottom: 8px;
 }
 
 .confidence {
-  font-size: 16px;
   color: #64748b;
-  margin-top: 5px;
+  font-weight: 500;
 }
 
 .statusBadge {
   display: inline-block;
-  margin-top: 12px;
-  color: #b91c1c;
-  font-weight: bold;
-  font-size: 14px;
+  margin-top: 10px;
+  padding: 6px 12px;
+  border-radius: 99px;
+  font-weight: 700;
+  font-size: 0.875rem;
+}
+
+.statusBadge.urgent { background: #fee2e2; color: #dc2626; }
+.statusBadge.stable { background: #dcfce7; color: #16a34a; }
+
+.contextBox {
+    background: #eff6ff;
+    border-left: 4px solid #3b82f6;
+    padding: 12px;
+    margin: 15px 0;
+    color: #1e3a8a;
+    font-size: 0.95rem;
 }
 
 .actionPlanHeader {
-  font-size: 18px;
-  font-weight: bold;
+  font-weight: 800;
   color: #334155;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 15px;
+  margin: 25px 0 15px;
+  font-size: 1.1rem;
 }
 
 .grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  gap: 15px;
 }
 
 .infoBox {
-  padding: 15px;
-  border-radius: 10px;
+  background: #ffffff;
   border: 1px solid #e2e8f0;
-  background-color: #fff;
+  padding: 15px;
+  border-radius: 12px;
+}
+
+.infoBox.secondary {
+    background: #f8fafc;
 }
 
 .boxTitle {
-  font-weight: bold;
-  font-size: 15px;
+  font-weight: 700;
   color: #1e293b;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
+  font-size: 0.9rem;
+  text-transform: uppercase;
 }
 
 .boxContent {
-  font-size: 14px;
   color: #475569;
-  line-height: 1.6;
-  white-space: pre-line;
-}
-
-.precautionBox {
-  padding: 20px;
-  border-radius: 10px;
-  background-color: #fff1f2;
-  border: 1px solid #fecdd3;
-  margin-top: 20px;
-}
-
-.precautionTitle {
-  color: #9f1239;
-  font-weight: bold;
-  font-size: 16px;
-  margin-bottom: 8px;
-}
-
-.precautionText {
-  color: #e11d48;
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 1.7;
-  white-space: pre-line;
-}
-
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
-}
-
-.th {
-  text-align: left;
-  padding: 12px;
-  background-color: #f8fafc;
-  border-bottom: 2px solid #e2e8f0;
-  font-size: 14px;
-  color: #64748b;
-}
-
-.td {
-  padding: 12px;
-  border-bottom: 1px solid #f1f5f9;
-  font-size: 14px;
-  color: #1e293b;
-}
-
-.tdBold {
-  padding: 12px;
-  border-bottom: 1px solid #f1f5f9;
-  font-size: 14px;
-  color: #1e293b;
-  font-weight: 600;
-}
-
-.badge {
-  display: inline-block;
-  padding: 5px 12px;
-  border-radius: 20px;
-  background-color: #eff6ff;
-  color: #2563eb;
-  font-size: 12px;
-  margin-right: 8px;
-  margin-bottom: 8px;
-  font-weight: 500;
-}
-
-.navBtn {
-  display: block;
-  margin: 40px auto;
-  padding: 14px 40px;
-  background-color: #4f46e5;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 16px;
-}
-
-.navBtn:hover {
-  background-color: #4338ca;
+  font-size: 0.95rem;
+  line-height: 1.5;
 }
 
 .gridThreeCols {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 15px;
-  margin-bottom: 20px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  color: #1e293b;
 }
 
-.symptomMargin {
-  margin-top: 15px;
+.symptomWrapper {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f1f5f9; /* Light contrast background */
+    border-radius: 10px;
 }
 
+/* The label 'Reported Symptoms:' */
 .symptomLabel {
-  display: block;
-  margin-bottom: 10px;
+    display: block;
+    margin-bottom: 10px;
+    color: #334155;
+    font-weight: 700;
+    font-size: 0.95rem;
 }
 
-.scrollableTable {
-  max-height: 350px;
-  overflow-y: auto;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
+.badge {
+    background: #3b82f6; /* Bright Medical Blue */
+    color: #ffffff !important;     /* Pure White Text for contrast */
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-right: 8px;
+    margin-bottom: 8px;
+    display: inline-block;
+    box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+    border: 1px solid #2563eb;
+    text-transform: capitalize;
 }
 
-.differentialDiagnosisRow {
+.badgeContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.btnGroup {
   display: flex;
-  justify-content: space-between;
-  padding: 12px 0;
-  border-bottom: 1px solid #f1f5f9;
+  gap: 15px;
+  margin-top: 30px;
 }
 
-.diseaseLabel {
-  font-weight: 500;
-  color: #475569;
+.navBtn {
+  flex: 1;
+  padding: 14px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
 }
 
-.confidenceLabel {
-  color: #94a3b8;
-  font-size: 13px;
-}
+.navBtn.primary { background: #2563eb; color: white; }
+.navBtn.secondary { background: #64748b; color: white; }
 
 .disclaimer {
-  text-align: center;
+  font-size: 0.75rem;
   color: #94a3b8;
-  font-size: 12px;
-  margin-bottom: 50px;
+  text-align: center;
+  margin-top: 40px;
+}
+
+.xrayImage {
+  width: 100%;
+  max-height: 400px;
+  object-fit: contain;
+  border-radius: 12px;
+  background: #000;
+}
+
+@media (max-width: 600px) {
+  .grid { grid-template-columns: 1fr; }
+  .gridThreeCols { grid-template-columns: 1fr; }
 }
