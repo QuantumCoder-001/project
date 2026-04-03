@@ -4,6 +4,7 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000
 
 const api = axios.create({
     baseURL: API_BASE_URL,
+    timeout: 120000,
     headers: {
         'Content-Type': 'application/json',
     },
@@ -29,26 +30,24 @@ api.interceptors.response.use(
 
 // ============ ML SERVICE API (Status & Initialization) ============
 export const checkMLHealth = async () => {
-    // Matches router.get("/health", checkHealth) in predictionRoutes.js
     try {
         const response = await api.get('/predictions/health');
         return response.data;
     } catch (error) {
         console.error("ML health check failed:", error.message);
-        // If the request fails, return offline so the UI can show the error
         return { status: "offline" };
     }
 };
 
 export const getSymptoms = async () => {
-    // Matches router.get("/symptoms", getSymptomsList) in predictionRoutes.js
     const response = await api.get('/predictions/symptoms');
     return response.data;
 };
 
 // ============ PREDICTION API (Submitting Data) ============
+
+// 1. Symptom Based
 export const predictDisease = async (symptoms, userData = {}) => {
-    // Matches router.post("/symptoms", protect, predictSymptoms)
     const response = await api.post('/predictions/symptoms', {
         symptoms,
         age: userData.age,
@@ -58,8 +57,8 @@ export const predictDisease = async (symptoms, userData = {}) => {
     return response.data;
 };
 
+// 2. Blood Report Based
 export const predictByReport = async (reportData, userData = {}) => {
-    // Matches router.post("/report", protect, predictReport)
     const response = await api.post('/predictions/report', {
         report_data: reportData,
         age: userData.age,
@@ -68,21 +67,36 @@ export const predictByReport = async (reportData, userData = {}) => {
     return response.data;
 };
 
+/**
+ * 3. X-Ray Based Prediction (NEW)
+ * Sends the image file to the /predict-xray endpoint
+ */
+export const predictByXray = async (imageFile) => {
+    // Create FormData object to handle file upload
+    const formData = new FormData();
+    formData.append('file', imageFile);
+
+    // We override the Content-Type header specifically for this request
+    const response = await api.post('/predictions/xray', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
+    return response.data;
+};
+
 // ============ HISTORY API (Managing Records) ============
 export const getHistory = async () => {
-    // Matches router.get("/history", protect, getHistory)
     const response = await api.get('/predictions/history');
     return response.data;
 };
 
 export const getPredictionRecord = async (id) => {
-    // Matches router.get("/:id", protect, getRecord)
     const response = await api.get(`/predictions/${id}`);
     return response.data;
 };
 
 export const deletePredictionRecord = async (id) => {
-    // Matches router.delete("/:id", protect, deleteRecord)
     const response = await api.delete(`/predictions/${id}`);
     return response.data;
 };

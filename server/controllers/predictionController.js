@@ -1,5 +1,6 @@
 const HealthRecord = require("../models/HealthRecord");
 const axios = require("axios");
+const FormData = require("form-data"); // NEW: Required to forward files
 
 const ML_SERVICE_URL = process.env.ML_SERVICE_URL;
 
@@ -26,7 +27,6 @@ const predictSymptoms = async (req, res) => {
     const mlResponse = await axios.post(`${ML_SERVICE_URL}/predict`, { symptoms }, { timeout: 60000 });
     const predictions = mlResponse.data;
 
-    // The 'predictions' object now contains the 'precautions' from app.py
     await HealthRecord.create({
       user: req.user._id,
       symptoms,
@@ -39,7 +39,6 @@ const predictSymptoms = async (req, res) => {
     });
 
     res.status(201).json({ success: true, predictions });
-
   } catch (error) {
     console.error("ML Prediction Error:", error.message);
     res.status(500).json({ success: false, message: "ML service is unavailable" });
@@ -55,23 +54,19 @@ const predictReport = async (req, res) => {
       return res.status(400).json({ message: "Blood report data is required" });
     }
 
-    // Explicitly convert values to numbers before sending to ML service
-    // This prevents the 400 error caused by string inputs
     const payload = {};
     for (const key in report_data) {
       payload[key] = parseFloat(report_data[key]) || 0;
     }
 
-    // Add age and bp to the flat payload for the ML service
     const mlResponse = await axios.post(`${ML_SERVICE_URL}/predict-report`, {
       ...payload,
       age: parseFloat(age) || 0,
-      bp: bp // BP is usually handled as a string "120/80"
+      bp: bp
     }, { timeout: 60000 });
 
     const predictions = mlResponse.data;
 
-    // Save to database
     await HealthRecord.create({
       user: req.user._id,
       age,
@@ -83,7 +78,6 @@ const predictReport = async (req, res) => {
     });
 
     res.status(201).json({ success: true, predictions });
-
   } catch (error) {
     console.error("ML Report Prediction Error:", error.response?.data || error.message);
     res.status(error.response?.status || 500).json({
@@ -93,7 +87,49 @@ const predictReport = async (req, res) => {
   }
 };
 
-// 4. Get symptoms list
+/**
+ * 4. NEW: Predict X-ray
+ * Forwards image from frontend to ML service and saves result
+ */
+const predictXray = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: "X-ray image is required" });
+    }
+
+    // Create a new FormData object to wrap the file buffer
+    const formData = new FormData();
+    formData.append("file", req.file.buffer, {
+      filename: req.file.originalname,
+      contentType: req.file.mimetype,
+    });
+
+    // Forward the file to the ML service's dedicated X-ray endpoint
+    const mlResponse = await axios.post(`${ML_SERVICE_URL}/predict-xray`, formData, {
+      headers: { ...formData.getHeaders() },
+      timeout: 120000 // Image processing may take longer
+    });
+
+    const prediction = mlResponse.data;
+
+    // Save to database (Store as an array to keep history consistent with other modes)
+    await HealthRecord.create({
+      user: req.user._id,
+      age: req.body.age,
+      bp: req.body.bp,
+      predictions: [prediction],
+      predictionType: "xray",
+      createdAt: new Date()
+    });
+
+    res.status(201).json({ success: true, predictions: [prediction] });
+  } catch (error) {
+    console.error("X-ray Prediction Error:", error.response?.data || error.message);
+    res.status(500).json({ success: false, message: "X-ray analysis failed" });
+  }
+};
+
+// 5. Get symptoms list
 const getSymptomsList = async (req, res) => {
   try {
     const response = await axios.get(`${ML_SERVICE_URL}/symptoms`, { timeout: 60000 });
@@ -104,7 +140,7 @@ const getSymptomsList = async (req, res) => {
   }
 };
 
-// 5. History and Records
+// 6. History and Records
 const getHistory = async (req, res) => {
   try {
     const records = await HealthRecord.find({ user: req.user._id }).sort({ createdAt: -1 });
@@ -138,6 +174,7 @@ module.exports = {
   checkHealth,
   predictSymptoms,
   predictReport,
+  predictXray, // Export the new function
   getSymptomsList,
   getHistory,
   getRecord,
