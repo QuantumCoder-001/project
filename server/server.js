@@ -10,8 +10,12 @@ const app = express();
 
 // Middleware
 app.use(express.json());
+const allowedOrigins = [
+    process.env.CLIENT_URL || 'http://localhost:5173',
+    'http://localhost:5174'
+].filter(Boolean);
 app.use(cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    origin: allowedOrigins,
     credentials: true
 }));
 
@@ -33,11 +37,13 @@ mongoose.connect(process.env.MONGO_URI)
         const authRoutes = require('./routes/authRoutes');
         const predictRoutes = require('./routes/predictionRoutes');
         const mlRoutes = require('./routes/mlRoutes');
+        const chatRoutes = require('./routes/chatRoutes');
 
         // Register routes
         app.use('/api/auth', authRoutes);
         app.use('/api/predictions', predictRoutes);
         app.use('/api/ml', mlRoutes);
+        app.use('/api/chat', chatRoutes);
 
         // 404 handler
         app.use((req, res) => {

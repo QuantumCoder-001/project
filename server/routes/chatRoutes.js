@@ -1,19 +1,18 @@
 const express = require("express");
 const router = express.Router();
 const { GoogleGenAI } = require("@google/genai");
-const { protect } = require("../middleware/authMiddleware");
 
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY,
 });
 
-router.post("/", protect, async (req, res) => {
+router.post("/", async (req, res) => {
   try {
     const { message } = req.body;
 
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
-      contents: message,
+      model: "gemini-2.5-flash",
+      contents: [{ parts: [{ text: message }] }],
     });
 
     res.json({
