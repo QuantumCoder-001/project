@@ -38,7 +38,7 @@ const predictSymptoms = async (req, res) => {
       createdAt: new Date()
     });
 
-    res.status(201).json({ success: true, predictions });
+    res.status(201).json(predictions);
   } catch (error) {
     console.error("ML Prediction Error:", error.message);
     res.status(500).json({ success: false, message: "ML service is unavailable" });
@@ -77,7 +77,7 @@ const predictReport = async (req, res) => {
       createdAt: new Date()
     });
 
-    res.status(201).json({ success: true, predictions });
+    res.status(201).json(predictions);
   } catch (error) {
     console.error("ML Report Prediction Error:", error.response?.data || error.message);
     res.status(error.response?.status || 500).json({
@@ -88,8 +88,8 @@ const predictReport = async (req, res) => {
 };
 
 /**
- * 4. NEW: Predict X-ray
- * Forwards image from frontend to ML service and saves result
+ * 4. UPDATED: Predict X-ray
+ * Forwards image from frontend to ML service and saves the Top 3 results
  */
 const predictXray = async (req, res) => {
   try {
@@ -97,32 +97,31 @@ const predictXray = async (req, res) => {
       return res.status(400).json({ message: "X-ray image is required" });
     }
 
-    // Create a new FormData object to wrap the file buffer
     const formData = new FormData();
     formData.append("file", req.file.buffer, {
       filename: req.file.originalname,
       contentType: req.file.mimetype,
     });
 
-    // Forward the file to the ML service's dedicated X-ray endpoint
     const mlResponse = await axios.post(`${ML_SERVICE_URL}/predict-xray`, formData, {
       headers: { ...formData.getHeaders() },
-      timeout: 120000 // Image processing may take longer
+      timeout: 120000
     });
 
-    const prediction = mlResponse.data;
+    // mlResponse.data is now already an array of Top 3 predictions
+    const predictions = mlResponse.data;
 
-    // Save to database (Store as an array to keep history consistent with other modes)
+    // Save to database
     await HealthRecord.create({
       user: req.user._id,
       age: req.body.age,
       bp: req.body.bp,
-      predictions: [prediction],
+      predictions: predictions, // Removed brackets [] because it's already an array
       predictionType: "xray",
       createdAt: new Date()
     });
 
-    res.status(201).json({ success: true, predictions: [prediction] });
+    res.status(201).json(predictions);
   } catch (error) {
     console.error("X-ray Prediction Error:", error.response?.data || error.message);
     res.status(500).json({ success: false, message: "X-ray analysis failed" });

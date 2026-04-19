@@ -8,7 +8,7 @@ const Result = () => {
 
   const { predictions, symptoms, predictionType, userData, xrayImage } = state;
 
-  if (!predictions) {
+  if (!predictions || !Array.isArray(predictions)) {
     return (
       <div className="container">
         <div className="card">
@@ -19,24 +19,9 @@ const Result = () => {
     );
   }
 
-  const unwrapData = (data) => {
-    if (!data) return {};
-    if (typeof data === "string") {
-      try {
-        return unwrapData(JSON.parse(data));
-      } catch (e) {
-        return {};
-      }
-    }
-    if (data.disease) return data;
-    if (Array.isArray(data) && data.length > 0) return unwrapData(data[0]);
-    if (data.data) return unwrapData(data.data);
-    if (data.predictions) return unwrapData(data.predictions);
-    if (data.prediction) return unwrapData(data.prediction);
-    return data;
-  };
-
-  const topPrediction = unwrapData(predictions);
+  // The first item in your new array is the top prediction
+  const topPrediction = predictions[0];
+  const otherPredictions = predictions.slice(1); // The remaining 2
   const recs = topPrediction?.recommendation;
 
   return (
@@ -58,6 +43,7 @@ const Result = () => {
           {predictionType === "xray" ? "Radiological Findings" : "Clinical Assessment"}
         </h2>
 
+        {/* Primary Diagnosis */}
         <div className="predictionBox">
           <div className="diseaseName">{topPrediction?.disease || "Unknown Condition"}</div>
           <div className="confidence">Confidence Score: {topPrediction?.confidence || "0%"}</div>
@@ -66,8 +52,36 @@ const Result = () => {
           </div>
         </div>
 
+        {/* Top 3 Alternative Predictions */}
+                {otherPredictions.length > 0 && (
+                  <div className="alternativesContainer" style={{
+                    marginTop: '15px',
+                    padding: '12px',
+                    backgroundColor: '#f1f5f9', // Slightly darker light-grey for better contrast
+                    borderRadius: '8px',
+                    border: '1px solid #e2e8f0'
+                  }}>
+                    <p style={{ fontSize: '0.9rem', color: '#475569', marginBottom: '8px' }}>
+                      <strong>Other Possible Conditions:</strong>
+                    </p>
+                    {otherPredictions.map((pred, i) => (
+                      <div key={i} style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        fontSize: '0.95rem',
+                        padding: '6px 0',
+                        borderBottom: i < otherPredictions.length - 1 ? '1px solid #cbd5e1' : 'none',
+                        color: '#1e293b' // Explicitly setting the text color to dark charcoal
+                      }}>
+                        <span style={{ color: '#1e293b' }}>{pred.disease}</span>
+                        <span style={{ fontWeight: '700', color: '#0f172a' }}>{pred.confidence}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
         {recs?.clinical_context && (
-            <div className="contextBox">
+            <div className="contextBox" style={{ marginTop: '20px' }}>
                 <strong>Medical Context:</strong> {recs.clinical_context}
             </div>
         )}
